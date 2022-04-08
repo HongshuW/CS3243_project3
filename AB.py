@@ -37,38 +37,38 @@ class Knight(Piece):
             if (row_int + 2 < rows):
                 pos = get_position_tuple(get_col_char(col_int - 1), row_int + 2)
                 if (not state.game.has_piece_at(pos) or state.game.has_opponent_at(pos, self.get_opponent_color())):
-                    moves.add(pos)
+                    moves.add((self.position, pos))
             if (row_int - 2 >= 0):
                 pos = get_position_tuple(get_col_char(col_int - 1), row_int - 2)
                 if (not state.game.has_piece_at(pos) or state.game.has_opponent_at(pos, self.get_opponent_color())):
-                    moves.add(pos)
+                    moves.add((self.position, pos))
         if (col_int - 2 >= 0):
             if (row_int + 1 < rows):
                 pos = get_position_tuple(get_col_char(col_int - 2), row_int + 1)
                 if (not state.game.has_piece_at(pos) or state.game.has_opponent_at(pos, self.get_opponent_color())):
-                    moves.add(pos)
+                    moves.add((self.position, pos))
             if (row_int - 1 >= 0):
                 pos = get_position_tuple(get_col_char(col_int - 2), row_int - 1)
                 if (not state.game.has_piece_at(pos) or state.game.has_opponent_at(pos, self.get_opponent_color())):
-                    moves.add(pos)
+                    moves.add((self.position, pos))
         if (col_int + 1 < cols):
             if (row_int + 2 < rows):
                 pos = get_position_tuple(get_col_char(col_int + 1), row_int + 2)
                 if (not state.game.has_piece_at(pos) or state.game.has_opponent_at(pos, self.get_opponent_color())):
-                    moves.add(pos)
+                    moves.add((self.position, pos))
             if (row_int - 2 >= 0):
                 pos = get_position_tuple(get_col_char(col_int + 1), row_int - 2)
                 if (not state.game.has_piece_at(pos) or state.game.has_opponent_at(pos, self.get_opponent_color())):
-                    moves.add(pos)
+                    moves.add((self.position, pos))
         if (col_int + 2 < cols):
             if (row_int + 1 < rows):
                 pos = get_position_tuple(get_col_char(col_int + 2), row_int + 1)
                 if (not state.game.has_piece_at(pos) or state.game.has_opponent_at(pos, self.get_opponent_color())):
-                    moves.add(pos)
+                    moves.add((self.position, pos))
             if (row_int - 1 >= 0):
                 pos = get_position_tuple(get_col_char(col_int + 2), row_int - 1)
                 if (not state.game.has_piece_at(pos) or state.game.has_opponent_at(pos, self.get_opponent_color())):
-                    moves.add(pos)
+                    moves.add((self.position, pos))
         return moves
 
 class Rook(Piece):
@@ -78,33 +78,33 @@ class Rook(Piece):
             pos = get_position_tuple(self.get_col_char(), i)
             if state.game.has_piece_at(pos):
                 if state.game.has_opponent_at(pos, self.get_opponent_color()):
-                    moves.add(pos)
+                    moves.add((self.position, pos))
                 break
-            moves.add(pos)
+            moves.add((self.position, pos))
         i = self.get_row_int() - 1
         while i >= 0:
             pos = get_position_tuple(self.get_col_char(), i)
             if state.game.has_piece_at(pos):
                 if state.game.has_opponent_at(pos, self.get_opponent_color()):
-                    moves.add(pos)
+                    moves.add((self.position, pos))
                 break
-            moves.add(pos)
+            moves.add((self.position, pos))
             i -= 1
         for j in range(self.get_col_int() + 1, 5):
             pos = get_position_tuple(get_col_char(j), self.get_row_int())
             if state.game.has_piece_at(pos):
                 if state.game.has_opponent_at(pos, self.get_opponent_color()):
-                    moves.add(pos)
+                    moves.add((self.position, pos))
                 break
-            moves.add(pos)
+            moves.add((self.position, pos))
         j = self.get_col_int() - 1
         while j >= 0:
             pos = get_position_tuple(get_col_char(j), self.get_row_int())
             if state.game.has_piece_at(pos):
                 if state.game.has_opponent_at(pos, self.get_opponent_color()):
-                    moves.add(pos)
+                    moves.add((self.position, pos))
                 break
-            moves.add(pos)
+            moves.add((self.position, pos))
             j -= 1
         return moves
 
@@ -123,20 +123,20 @@ class Bishop(Piece):
                     if not(i == self.get_row_int() and j == self.get_col_int()):
                         plus_stop = True
                     if (state.game.has_opponent_at(pos, self.get_opponent_color())):
-                        moves.add(pos)
+                        moves.add((self.position, pos))
                 else:
                     if self.position != pos:
-                        moves.add(pos)
+                        moves.add((self.position, pos))
             if j - count >= 0 and (minus_stop == False):
                 pos = get_position_tuple(get_col_char(j - count), i)
                 if (state.game.has_piece_at(pos)):
                     if not(i == self.get_row_int() and j == self.get_col_int()):
                         minus_stop = True
                     if (state.game.has_opponent_at(pos, self.get_opponent_color())):
-                        moves.add(pos)
+                        moves.add((self.position, pos))
                 else:
                     if self.position != pos:
-                        moves.add(pos)
+                        moves.add((self.position, pos))
             i -= 1
             count += 1
         i = self.get_row_int()
@@ -150,123 +150,30 @@ class Bishop(Piece):
                     if not(i == self.get_row_int() and j == self.get_col_int()):
                         plus_stop = True
                     if (state.game.has_opponent_at(pos, self.get_opponent_color())):
-                        moves.add(pos)
+                        moves.add((self.position, pos))
                 else:
                     if self.position != pos:
-                        moves.add(pos)
+                        moves.add((self.position, pos))
             if j - count >= 0 and (minus_stop == False):
                 pos = get_position_tuple(get_col_char(j - count), i)
                 if (state.game.has_piece_at(pos)):
                     if not(i == self.get_row_int() and j == self.get_col_int()):
                         minus_stop = True
                     if (state.game.has_opponent_at(pos, self.get_opponent_color())):
-                        moves.add(pos)
+                        moves.add((self.position, pos))
                 else:
                     if self.position != pos:
-                        moves.add(pos)
+                        moves.add((self.position, pos))
             i += 1
             count += 1
         return moves
 
 class Queen(Piece):
-    def get_moves_rook(self):
-        moves = set()
-        for i in range(self.get_row_int() + 1, 5):
-            pos = get_position_tuple(self.get_col_char(), i)
-            if state.game.has_piece_at(pos):
-                if state.game.has_opponent_at(pos, self.get_opponent_color()):
-                    moves.add(pos)
-                break
-            moves.add(pos)
-        i = self.get_row_int() - 1
-        while i >= 0:
-            pos = get_position_tuple(self.get_col_char(), i)
-            if state.game.has_piece_at(pos):
-                if state.game.has_opponent_at(pos, self.get_opponent_color()):
-                    moves.add(pos)
-                break
-            moves.add(pos)
-            i -= 1
-        for j in range(self.get_col_int() + 1, 5):
-            pos = get_position_tuple(get_col_char(j), self.get_row_int())
-            if state.game.has_piece_at(pos):
-                if state.game.has_opponent_at(pos, self.get_opponent_color()):
-                    moves.add(pos)
-                break
-            moves.add(pos)
-        j = self.get_col_int() - 1
-        while j >= 0:
-            pos = get_position_tuple(get_col_char(j), self.get_row_int())
-            if state.game.has_piece_at(pos):
-                if state.game.has_opponent_at(pos, self.get_opponent_color()):
-                    moves.add(pos)
-                break
-            moves.add(pos)
-            j -= 1
-        return moves
-
-    def get_moves_bishop(self):
-        moves = set()
-        i = self.get_row_int()
-        j = self.get_col_int()
-        count = 0
-        plus_stop = False
-        minus_stop = False
-        while i >= 0:
-            if j + count < 5 and (plus_stop == False):
-                pos = get_position_tuple(get_col_char(j + count), i)
-                if (state.game.has_piece_at(pos)):
-                    if not(i == self.get_row_int() and j == self.get_col_int()):
-                        plus_stop = True
-                    if (state.game.has_opponent_at(pos, self.get_opponent_color())):
-                        moves.add(pos)
-                else:
-                    if self.position != pos:
-                        moves.add(pos)
-            if j - count >= 0 and (minus_stop == False):
-                pos = get_position_tuple(get_col_char(j - count), i)
-                if (state.game.has_piece_at(pos)):
-                    if not(i == self.get_row_int() and j == self.get_col_int()):
-                        minus_stop = True
-                    if (state.game.has_opponent_at(pos, self.get_opponent_color())):
-                        moves.add(pos)
-                else:
-                    if self.position != pos:
-                        moves.add(pos)
-            i -= 1
-            count += 1
-        i = self.get_row_int()
-        count = 0
-        plus_stop = False
-        minus_stop = False
-        while i < 5:
-            if j + count < 5 and (plus_stop == False):
-                pos = get_position_tuple(get_col_char(j + count), i)
-                if (state.game.has_piece_at(pos)):
-                    if not(i == self.get_row_int() and j == self.get_col_int()):
-                        plus_stop = True
-                    if (state.game.has_opponent_at(pos, self.get_opponent_color())):
-                        moves.add(pos)
-                else:
-                    if self.position != pos:
-                        moves.add(pos)
-            if j - count >= 0 and (minus_stop == False):
-                pos = get_position_tuple(get_col_char(j - count), i)
-                if (state.game.has_piece_at(pos)):
-                    if not(i == self.get_row_int() and j == self.get_col_int()):
-                        minus_stop = True
-                    if (state.game.has_opponent_at(pos, self.get_opponent_color())):
-                        moves.add(pos)
-                else:
-                    if self.position != pos:
-                        moves.add(pos)
-            i += 1
-            count += 1
-        return moves
-
     def get_moves(self):
-        moves = self.get_moves_rook()
-        moves = moves.union(self.get_moves_bishop())
+        rook = Rook(self.color, self.position)
+        bishop = Bishop(self.color, self.position)
+        moves = rook.get_moves()
+        moves = moves.union(bishop.get_moves())
         return moves
 
 class King(Piece):
@@ -282,7 +189,7 @@ class King(Piece):
                         pos = get_position_tuple(get_col_char(i), j)
                         if (not state.game.has_piece_at(pos) or
                                 state.game.has_opponent_at(pos, self.get_opponent_color())):
-                            moves.add(pos)
+                            moves.add((self.position, pos))
                     j += 1
             i += 1
         return moves
@@ -291,17 +198,18 @@ class Pawn(Piece):
     def get_moves(self):
         # if pawn is at the first or last row, it cannot capture other pieces,
         # so only consider moving between rows 1 to 3
+        moves = self.get_threatened_pos()
         if (self.color == "White"):
             new_row = self.get_row_int() + 1
             new_pos = get_position_tuple(self.get_col_char(), new_row)
             if (new_row <= 3 and (not state.game.has_piece_at(new_pos))):
-                return set(new_pos)
+                moves.add((self.position, new_pos))
         else:
             new_row = self.get_row_int() - 1
             new_pos = get_position_tuple(self.get_col_char(), new_row)
             if (new_row >= 1 and (not state.game.has_piece_at(new_pos))):
-                return set(new_pos)
-        return None
+                moves.add((self.position, new_pos))
+        return moves
 
     def get_threatened_pos(self):
         threatened = set()
@@ -313,9 +221,9 @@ class Pawn(Piece):
                 pos_1 = get_position_tuple(get_col_char(col_1), new_row)
                 pos_2 = get_position_tuple(get_col_char(col_2), new_row)
                 if (col_1 < 5 and state.game.has_opponent_at(pos_1, self.get_opponent_color())):
-                    threatened.add(pos_1)
+                    threatened.add((self.position, pos_1))
                 if (col_2 >= 0 and state.game.has_opponent_at(pos_2, self.get_opponent_color())):
-                    threatened.add(pos_2)
+                    threatened.add((self.position, pos_2))
         else:
             new_row = self.get_row_int() - 1
             if (new_row >= 0):
@@ -324,16 +232,23 @@ class Pawn(Piece):
                 pos_1 = get_position_tuple(get_col_char(col_1), new_row)
                 pos_2 = get_position_tuple(get_col_char(col_2), new_row)
                 if (col_1 < 5 and state.game.has_opponent_at(pos_1, self.get_opponent_color())):
-                    threatened.add(pos_1)
+                    threatened.add((self.position, pos_1))
                 if (col_2 >= 0 and state.game.has_opponent_at(pos_2, self.get_opponent_color())):
-                    threatened.add(pos_2)
+                    threatened.add((self.position, pos_2))
         return threatened
 
 class Game:
-    def __init__(self, gamemboard, parent, depth):
+    def __init__(self, gamemboard, parent, depth, color):
         self.gameboard = gamemboard
         self.parent = parent
         self.depth = depth
+        self.own_set = dict()
+        self.opponent_set = dict()
+        for key in gamemboard:
+            if gamemboard[key][1] == color:
+                self.own_set[key] = gamemboard[key]
+            else:
+                self.opponent_set[key] = gamemboard[key]
 
     def has_piece_at(self, pos):
         return (pos in self.gameboard)
@@ -342,12 +257,8 @@ class Game:
         return self.has_piece_at(pos) and self.gameboard[pos][1] == opponent_color
 
 class State:
-    def __init__(self, game, to_move):
+    def __init__(self, game):
         self.game = game
-        self.to_move = to_move
-
-    def actions(self):
-        pass
 
     def result(self, action):
         pass
@@ -369,7 +280,28 @@ def get_position_tuple(col_char, row):
 
 #Implement your minimax with alpha-beta pruning algorithm here.
 def ab():
-    pass
+    own_pieces = state.game.own_set
+    # get all possible moves
+    moves = set()
+    for pos in own_pieces:
+        piece = None
+        type = own_pieces[pos][0]
+        color = own_pieces[pos][1]
+        if (type == "King"):
+            piece = King(color, pos)
+        elif (type == "Queen"):
+            piece = Queen(color, pos)
+        elif (type == "Rook"):
+            piece = Rook(color, pos)
+        elif (type == "Bishop"):
+            piece = Bishop(color, pos)
+        elif (type == "Knight"):
+            piece = Knight(color, pos)
+        else:
+            piece = Pawn(color, pos)
+        moves = moves.union(piece.get_moves())
+    print(moves)
+    return
 
 
 
@@ -390,9 +322,15 @@ def ab():
 
 def studentAgent(gameboard):
     # You can code in here but you cannot remove this function, change its parameter or change the return type
-    game = Game(gameboard, None, 0)
+    game = Game(gameboard, None, 0, "White")
     global state
-    state = State(game, "White")
+    state = State(game)
 
     move = ab()
     return move #Format to be returned (('a', 0), ('b', 3))
+
+studentAgent({('a',0):('Rook','White'), ('a',4):('Rook','Black'), ('a',1):('Pawn','White'), ('a',3):('Pawn','Black'),
+              ('b',0):('Knight','White'), ('b',4):('Knight','Black'), ('b',1):('Pawn','White'), ('b',3):('Pawn','Black'),
+              ('c',0):('Bishop','White'), ('c',4):('Bishop','Black'), ('c',1):('Pawn','White'), ('c',3):('Pawn','Black'),
+              ('d',0):('Queen','White'), ('d',4):('Queen','Black'), ('d',1):('Pawn','White'), ('d',3):('Pawn','Black'),
+              ('e',0):('King','White'), ('e',4):('King','Black'), ('e',1):('Pawn','White'), ('e',3):('Pawn','Black')})
