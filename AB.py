@@ -240,9 +240,9 @@ class Game:
     def is_terminal(self, state):
         num_of_kings = 0
         for key in state.gameboard:
-            if (state.gameboard[key][0] == "King"):
+            if (state.gameboard[key][0] == 'King'):
                 num_of_kings += 1
-        return num_of_kings < 2 or state.depth == 4
+        return num_of_kings < 2 or state.depth >= 1
 
     def utility(self, state):
         # Modified from Claude Shannon's evaluation funtion:
@@ -302,7 +302,7 @@ class Game:
                 piece = Knight(color, pos)
             else:
                 piece = Pawn(color, pos)
-            moves.add(piece.get_moves(state))
+            moves = moves.union(piece.get_moves(state))
         return list(moves)
 
     def result(self, state, action):
@@ -336,6 +336,12 @@ class State:
     def has_opponent_at(self, pos):
         return self.has_piece_at(pos) and self.gameboard[pos][1] != self.color
 
+    def get_opponent_color(self):
+        if (self.color == 'White'):
+            return 'Black'
+        else:
+            return 'White'
+
 def get_col_int(col_char):
     return ord(col_char) - 97
 
@@ -353,7 +359,7 @@ def max_value(game, state):
     move = None
     actions = game.actions(state)
     for a in actions:
-        result = min_value(game, state)
+        result = min_value(game, game.result(state, a))
         v2 = result[0]
         if (v2 > v):
             v = v2
@@ -368,7 +374,7 @@ def min_value(game, state):
     move = None
     actions = game.actions(state)
     for a in actions:
-        result = max_value(game, state)
+        result = max_value(game, game.result(state, a))
         v2 = result[0]
         if (v2 < v):
             v = v2
@@ -378,8 +384,6 @@ def min_value(game, state):
 #Implement your minimax with alpha-beta pruning algorithm here.
 def ab(game, state):
     return max_value(game, state)[1]
-
-
 
 ### DO NOT EDIT/REMOVE THE FUNCTION HEADER BELOW###
 # Chess Pieces: King, Queen, Knight, Bishop, Rook (First letter capitalized)
