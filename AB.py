@@ -253,37 +253,42 @@ class Game:
         bishop = 0
         knight = 0
         pawn = 0
-        own_pieces = state.own_set
-        opponent_pieces = state.opponent_set
-        for key in own_pieces:
-            if (own_pieces[key][0] == 'King'):
-                king += 1
-            elif (own_pieces[key][0] == 'Queen'):
-                queen += 1
-            elif (own_pieces[key][0] == 'Rook'):
-                rook += 1
-            elif (own_pieces[key][0] == 'Bishop'):
-                bishop += 1
-            elif (own_pieces[key][0] == 'Knight'):
-                knight += 1
+        gameboard = state.gameboard
+        for key in gameboard:
+            if (gameboard[key][0] == 'King'):
+                if (gameboard[key][1] == 'White'):
+                    king += 1
+                else:
+                    king -= 1
+            elif (gameboard[key][0] == 'Queen'):
+                if (gameboard[key][1] == 'White'):
+                    queen += 1
+                else:
+                    queen -= 1
+            elif (gameboard[key][0] == 'Rook'):
+                if (gameboard[key][1] == 'White'):
+                    rook += 1
+                else:
+                    rook -= 1
+            elif (gameboard[key][0] == 'Bishop'):
+                if (gameboard[key][1] == 'White'):
+                    bishop += 1
+                else:
+                    bishop -= 1
+            elif (gameboard[key][0] == 'Knight'):
+                if (gameboard[key][1] == 'White'):
+                    knight += 1
+                else:
+                    knight -= 1
             else:
-                pawn += 1
-        for key in opponent_pieces:
-            if (opponent_pieces[key][0] == 'King'):
-                king -= 1
-            elif (opponent_pieces[key][0] == 'Queen'):
-                queen -= 1
-            elif (opponent_pieces[key][0] == 'Rook'):
-                rook -= 1
-            elif (opponent_pieces[key][0] == 'Bishop'):
-                bishop -= 1
-            elif (opponent_pieces[key][0] == 'Knight'):
-                knight -= 1
-            else:
-                pawn -= 1
+                if (gameboard[key][1] == 'White'):
+                    pawn += 1
+                else:
+                    pawn -= 1
         return 200 * king + 9 * queen + 5 * rook + 3 * (bishop + knight) + pawn
 
     def actions(self, state):
+        threatened_area = self.opponent_actions(state)
         moves = set()
         own_pieces = state.own_set
         for pos in own_pieces:
@@ -302,15 +307,39 @@ class Game:
                 piece = Knight(color, pos)
             else:
                 piece = Pawn(color, pos)
-            moves = moves.union(piece.get_moves(state))
+            moves = moves.union(piece.get_moves(state) - threatened_area)
         return list(moves)
+
+    def opponent_actions(self, state):
+        moves = set()
+        opponent_pieces = state.opponent_set
+        for pos in opponent_pieces:
+            piece = None
+            type = opponent_pieces[pos][0]
+            color = state.get_opponent_color()
+            if (type == "King"):
+                piece = King(color, pos)
+            elif (type == "Queen"):
+                piece = Queen(color, pos)
+            elif (type == "Rook"):
+                piece = Rook(color, pos)
+            elif (type == "Bishop"):
+                piece = Bishop(color, pos)
+            elif (type == "Knight"):
+                piece = Knight(color, pos)
+            else:
+                piece = Pawn(color, pos)
+            moves = moves.union(piece.get_moves(state))
+        return moves
 
     def result(self, state, action):
         original_pos = action[0]
         new_pos = action[1]
         new_gameboard = dict()
         for key in state.gameboard:
-            if key == original_pos:
+            if key == new_pos:
+                continue
+            elif key == original_pos:
                 new_gameboard[new_pos] = state.gameboard[key]
             else:
                 new_gameboard[key] = state.gameboard[key]
