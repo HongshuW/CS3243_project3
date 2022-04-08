@@ -34,7 +34,41 @@ class Knight(Piece):
     pass
 
 class Rook(Piece):
-    pass
+    def get_moves(self):
+        moves = set()
+        for i in range(self.get_row_int() + 1, 5):
+            pos = get_position_tuple(self.get_col_char(), i)
+            if state.game.has_piece_at(pos):
+                if state.game.has_opponent_at(pos, self.get_opponent_color()):
+                    moves.add(pos)
+                break
+            moves.add(pos)
+        i = self.get_row_int() - 1
+        while i >= 0:
+            pos = get_position_tuple(self.get_col_char(), i)
+            if state.game.has_piece_at(pos):
+                if state.game.has_opponent_at(pos, self.get_opponent_color()):
+                    moves.add(pos)
+                break
+            moves.add(pos)
+            i -= 1
+        for j in range(self.get_col_int() + 1, 5):
+            pos = get_position_tuple(get_col_char(j), self.get_row_int())
+            if state.game.has_piece_at(pos):
+                if state.game.has_opponent_at(pos, self.get_opponent_color()):
+                    moves.add(pos)
+                break
+            moves.add(pos)
+        j = self.get_col_int() - 1
+        while j >= 0:
+            pos = get_position_tuple(get_col_char(j), self.get_row_int())
+            if state.game.has_piece_at(pos):
+                if state.game.has_opponent_at(pos, self.get_opponent_color()):
+                    moves.add(pos)
+                break
+            moves.add(pos)
+            j -= 1
+        return moves
 
 class Bishop(Piece):
     def get_moves(self):
