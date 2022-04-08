@@ -300,8 +300,7 @@ def ab():
         else:
             piece = Pawn(color, pos)
         moves = moves.union(piece.get_moves())
-    print(moves)
-    return
+    return list(moves)[0]
 
 
 
@@ -329,8 +328,8 @@ def studentAgent(gameboard):
     move = ab()
     return move #Format to be returned (('a', 0), ('b', 3))
 
-studentAgent({('a',0):('Rook','White'), ('a',4):('Rook','Black'), ('a',1):('Pawn','White'), ('a',3):('Pawn','Black'),
-              ('b',0):('Knight','White'), ('b',4):('Knight','Black'), ('b',1):('Pawn','White'), ('b',3):('Pawn','Black'),
-              ('c',0):('Bishop','White'), ('c',4):('Bishop','Black'), ('c',1):('Pawn','White'), ('c',3):('Pawn','Black'),
-              ('d',0):('Queen','White'), ('d',4):('Queen','Black'), ('d',1):('Pawn','White'), ('d',3):('Pawn','Black'),
-              ('e',0):('King','White'), ('e',4):('King','Black'), ('e',1):('Pawn','White'), ('e',3):('Pawn','Black')})
+# studentAgent({('a',0):('Rook','White'), ('a',4):('Rook','Black'), ('a',1):('Pawn','White'), ('a',3):('Pawn','Black'),
+#               ('b',0):('Knight','White'), ('b',4):('Knight','Black'), ('b',1):('Pawn','White'), ('b',3):('Pawn','Black'),
+#               ('c',0):('Bishop','White'), ('c',4):('Bishop','Black'), ('c',1):('Pawn','White'), ('c',3):('Pawn','Black'),
+#               ('d',0):('Queen','White'), ('d',4):('Queen','Black'), ('d',1):('Pawn','White'), ('d',3):('Pawn','Black'),
+#               ('e',0):('King','White'), ('e',4):('King','Black'), ('e',1):('Pawn','White'), ('e',3):('Pawn','Black')})
