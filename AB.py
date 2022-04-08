@@ -242,7 +242,7 @@ class Game:
         for key in state.gameboard:
             if (state.gameboard[key][0] == 'King'):
                 num_of_kings += 1
-        return num_of_kings < 2 or state.depth >= 1
+        return num_of_kings < 2 or state.depth >= 3
 
     def utility(self, state):
         # Modified from Claude Shannon's evaluation funtion:
