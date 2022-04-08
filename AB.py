@@ -20,10 +20,6 @@ class Piece:
         # return a list of positions that this piece can move to
         return None
 
-    def get_threatened_pos(self):
-        # return a list of positions occupied by opponents that are threatened by this piece
-        return None
-
     def get_opponent_color(self):
         if (self.color == "White"):
             return "Black"
@@ -31,7 +27,49 @@ class Piece:
             return "White"
 
 class Knight(Piece):
-    pass
+    def get_moves(self):
+        col_int = self.get_col_int()
+        row_int = self.get_row_int()
+        rows = 5
+        cols = 5
+        moves = set()
+        if (col_int - 1 >= 0):
+            if (row_int + 2 < rows):
+                pos = get_position_tuple(get_col_char(col_int - 1), row_int + 2)
+                if (not state.game.has_piece_at(pos) or state.game.has_opponent_at(pos, self.get_opponent_color())):
+                    moves.add(pos)
+            if (row_int - 2 >= 0):
+                pos = get_position_tuple(get_col_char(col_int - 1), row_int - 2)
+                if (not state.game.has_piece_at(pos) or state.game.has_opponent_at(pos, self.get_opponent_color())):
+                    moves.add(pos)
+        if (col_int - 2 >= 0):
+            if (row_int + 1 < rows):
+                pos = get_position_tuple(get_col_char(col_int - 2), row_int + 1)
+                if (not state.game.has_piece_at(pos) or state.game.has_opponent_at(pos, self.get_opponent_color())):
+                    moves.add(pos)
+            if (row_int - 1 >= 0):
+                pos = get_position_tuple(get_col_char(col_int - 2), row_int - 1)
+                if (not state.game.has_piece_at(pos) or state.game.has_opponent_at(pos, self.get_opponent_color())):
+                    moves.add(pos)
+        if (col_int + 1 < cols):
+            if (row_int + 2 < rows):
+                pos = get_position_tuple(get_col_char(col_int + 1), row_int + 2)
+                if (not state.game.has_piece_at(pos) or state.game.has_opponent_at(pos, self.get_opponent_color())):
+                    moves.add(pos)
+            if (row_int - 2 >= 0):
+                pos = get_position_tuple(get_col_char(col_int + 1), row_int - 2)
+                if (not state.game.has_piece_at(pos) or state.game.has_opponent_at(pos, self.get_opponent_color())):
+                    moves.add(pos)
+        if (col_int + 2 < cols):
+            if (row_int + 1 < rows):
+                pos = get_position_tuple(get_col_char(col_int + 2), row_int + 1)
+                if (not state.game.has_piece_at(pos) or state.game.has_opponent_at(pos, self.get_opponent_color())):
+                    moves.add(pos)
+            if (row_int - 1 >= 0):
+                pos = get_position_tuple(get_col_char(col_int + 2), row_int - 1)
+                if (not state.game.has_piece_at(pos) or state.game.has_opponent_at(pos, self.get_opponent_color())):
+                    moves.add(pos)
+        return moves
 
 class Rook(Piece):
     def get_moves(self):
