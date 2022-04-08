@@ -277,6 +277,43 @@ class Game:
         # if both kings present, game is not terminal
         return (False, None)
 
+    def evaluation_function(self):
+        # Modified from Claude Shannon's evaluation funtion:
+        # https://www.chessprogramming.org/Evaluation#Basic_Evaluation_Features
+        king = 0
+        queen = 0
+        rook = 0
+        bishop = 0
+        knight = 0
+        pawn = 0
+        for key in self.own_set:
+            if (self.own_set[key][0] == 'King'):
+                king += 1
+            elif (self.own_set[key][0] == 'Queen'):
+                queen += 1
+            elif (self.own_set[key][0] == 'Rook'):
+                rook += 1
+            elif (self.own_set[key][0] == 'Bishop'):
+                bishop += 1
+            elif (self.own_set[key][0] == 'Knight'):
+                knight += 1
+            else:
+                pawn += 1
+        for key in self.opponent_set:
+            if (self.opponent_set[key][0] == 'King'):
+                king -= 1
+            elif (self.opponent_set[key][0] == 'Queen'):
+                queen -= 1
+            elif (self.opponent_set[key][0] == 'Rook'):
+                rook -= 1
+            elif (self.opponent_set[key][0] == 'Bishop'):
+                bishop -= 1
+            elif (self.opponent_set[key][0] == 'Knight'):
+                knight -= 1
+            else:
+                pawn -= 1
+        return 200 * king + 9 * queen + 5 * rook + 3 * (bishop + knight) + pawn
+
 class State:
     def __init__(self, game):
         self.game = game
