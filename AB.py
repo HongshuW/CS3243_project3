@@ -1,3 +1,6 @@
+import math
+from collections import deque
+
 ### IMPORTANT: Remove any print() functions or rename any print functions/variables/string when submitting on CodePost
 ### The autograder will not run if it detects any print function.
 
@@ -238,32 +241,23 @@ class Pawn(Piece):
         return threatened
 
 class Game:
-    def __init__(self, gamemboard, parent, depth, color):
-        self.gameboard = gamemboard
-        self.parent = parent
-        self.depth = depth
-        self.own_set = dict()
-        self.opponent_set = dict()
-        for key in gamemboard:
-            if gamemboard[key][1] == color:
-                self.own_set[key] = gamemboard[key]
-            else:
-                self.opponent_set[key] = gamemboard[key]
-
     def has_piece_at(self, pos):
         return (pos in self.gameboard)
 
     def has_opponent_at(self, pos, opponent_color):
         return self.has_piece_at(pos) and self.gameboard[pos][1] == opponent_color
 
-    def is_terminal(self):
-        num_of_kings = 0
-        for key in self.gameboard:
-            if (self.gameboard[key][0] == "King"):
-                num_of_kings += 1
-        return num_of_kings < 2
+    def to_move(self, state):
+        return state.color
 
-    def evaluation_function(self):
+    def is_terminal(self, state):
+        num_of_kings = 0
+        for key in state.gameboard:
+            if (state.gameboard[key][0] == "King"):
+                num_of_kings += 1
+        return num_of_kings < 2 or state.depth == 4
+
+    def utility(self, state):
         # Modified from Claude Shannon's evaluation funtion:
         # https://www.chessprogramming.org/Evaluation#Basic_Evaluation_Features
         king = 0
@@ -272,49 +266,89 @@ class Game:
         bishop = 0
         knight = 0
         pawn = 0
-        for key in self.own_set:
-            if (self.own_set[key][0] == 'King'):
+        own_pieces = state.own_set
+        opponent_pieces = state.opponent_set
+        for key in own_pieces:
+            if (own_pieces[key][0] == 'King'):
                 king += 1
-            elif (self.own_set[key][0] == 'Queen'):
+            elif (own_pieces[key][0] == 'Queen'):
                 queen += 1
-            elif (self.own_set[key][0] == 'Rook'):
+            elif (own_pieces[key][0] == 'Rook'):
                 rook += 1
-            elif (self.own_set[key][0] == 'Bishop'):
+            elif (own_pieces[key][0] == 'Bishop'):
                 bishop += 1
-            elif (self.own_set[key][0] == 'Knight'):
+            elif (own_pieces[key][0] == 'Knight'):
                 knight += 1
             else:
                 pawn += 1
-        for key in self.opponent_set:
-            if (self.opponent_set[key][0] == 'King'):
+        for key in opponent_pieces:
+            if (opponent_pieces[key][0] == 'King'):
                 king -= 1
-            elif (self.opponent_set[key][0] == 'Queen'):
+            elif (opponent_pieces[key][0] == 'Queen'):
                 queen -= 1
-            elif (self.opponent_set[key][0] == 'Rook'):
+            elif (opponent_pieces[key][0] == 'Rook'):
                 rook -= 1
-            elif (self.opponent_set[key][0] == 'Bishop'):
+            elif (opponent_pieces[key][0] == 'Bishop'):
                 bishop -= 1
-            elif (self.opponent_set[key][0] == 'Knight'):
+            elif (opponent_pieces[key][0] == 'Knight'):
                 knight -= 1
             else:
                 pawn -= 1
         return 200 * king + 9 * queen + 5 * rook + 3 * (bishop + knight) + pawn
 
+    def actions(self, state):
+        moves = set()
+        own_pieces = state.own_set
+        opponent_pieces = state.opponent_set
+        for pos in own_pieces:
+            piece = None
+            type = own_pieces[pos][0]
+            color = state.color
+            if (type == "King"):
+                piece = King(color, pos)
+            elif (type == "Queen"):
+                piece = Queen(color, pos)
+            elif (type == "Rook"):
+                piece = Rook(color, pos)
+            elif (type == "Bishop"):
+                piece = Bishop(color, pos)
+            elif (type == "Knight"):
+                piece = Knight(color, pos)
+            else:
+                piece = Pawn(color, pos)
+            moves.add(piece.get_moves())
+        return list(moves)
+
+    def result(self, state, action):
+        original_pos = action[0]
+        new_pos = action[1]
+        new_gameboard = dict()
+        for key in state.gameboard:
+            if key == original_pos:
+                new_gameboard[new_pos] = state.gameboard[key]
+            else:
+                new_gameboard[key] = state.gameboard[key]
+        return State(new_gameboard, state.get_opponent_color(), state.depth + 1)
+
 class State:
-    def __init__(self, game):
-        self.game = game
+    def __init__(self, gameboard, color, depth):
+        self.gameboard = gameboard
+        self.color = color
+        self.depth = depth
+        # split into two sets of pieces
+        self.own_set = dict()
+        self.opponent_set = dict()
+        for key in gameboard:
+            if gameboard[key][1] == color:
+                self.own_set[key] = gameboard[key]
+            else:
+                self.opponent_set[key] = gameboard[key]
 
-    def result(self, action):
-        pass
-
-    def is_terminal(self):
-        return self.game.is_terminal()
-
-    def utility(self, player):
-        if (self.is_terminal()):
-            return self.game.evaluation_function()
+    def get_opponent_color(self):
+        if (self.color == 'White'):
+            return 'Black'
         else:
-            return -1
+            return 'White'
 
 def get_col_int(col_char):
     return ord(col_char) - 97
@@ -325,29 +359,39 @@ def get_col_char(col_int):
 def get_position_tuple(col_char, row):
     return (col_char, int(row))
 
+# return (utility, move)
+def max_value(game, state):
+    if game.is_terminal(state):
+        return (game.utility(state), None)
+    v = -math.inf
+    move = None
+    actions = game.actions(state)
+    for a in actions:
+        result = min_value(game, state)
+        v2 = result[0]
+        if (v2 > v):
+            v = v2
+            move = a
+    return (v, move)
+
+# return (utility, move)
+def min_value(game, state):
+    if game.is_terminal(state):
+        return (game.utility(state), None)
+    v = math.inf
+    move = None
+    actions = game.actions(state)
+    for a in actions:
+        result = max_value(game, state)
+        v2 = result[0]
+        if (v2 < v):
+            v = v2
+            move = a
+    return (v, move)
+
 #Implement your minimax with alpha-beta pruning algorithm here.
-def ab():
-    own_pieces = state.game.own_set
-    # get all possible moves
-    moves = set()
-    for pos in own_pieces:
-        piece = None
-        type = own_pieces[pos][0]
-        color = own_pieces[pos][1]
-        if (type == "King"):
-            piece = King(color, pos)
-        elif (type == "Queen"):
-            piece = Queen(color, pos)
-        elif (type == "Rook"):
-            piece = Rook(color, pos)
-        elif (type == "Bishop"):
-            piece = Bishop(color, pos)
-        elif (type == "Knight"):
-            piece = Knight(color, pos)
-        else:
-            piece = Pawn(color, pos)
-        moves = moves.union(piece.get_moves())
-    return list(moves)[0]
+def ab(game, state):
+    return max_value(game, state)[1]
 
 
 
@@ -368,11 +412,10 @@ def ab():
 
 def studentAgent(gameboard):
     # You can code in here but you cannot remove this function, change its parameter or change the return type
-    game = Game(gameboard, None, 0, "White")
-    global state
-    state = State(game)
+    game = Game()
+    state = State(gameboard, 'White', 0)
 
-    move = ab()
+    move = ab(game, state)
     return move #Format to be returned (('a', 0), ('b', 3))
 
 # studentAgent({('a',0):('Rook','White'), ('a',4):('Rook','Black'), ('a',1):('Pawn','White'), ('a',3):('Pawn','Black'),
