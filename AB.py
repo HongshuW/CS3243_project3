@@ -256,26 +256,12 @@ class Game:
     def has_opponent_at(self, pos, opponent_color):
         return self.has_piece_at(pos) and self.gameboard[pos][1] == opponent_color
 
-    # return (is_terminal, self_wins)
     def is_terminal(self):
-        # check opponent's king
-        opponent_king_pos = None
-        for pos in self.opponent_set:
-            if (self.opponent_set[pos][0] == "King"):
-                opponent_king_pos = pos
-                break
-        if (opponent_king_pos == None):
-            return (True, True)
-        # check own king
-        own_king_pos = None
-        for pos in self.own_set:
-            if (self.own_set[pos][0] == "King"):
-                own_king_pos = pos
-                break
-        if (own_king_pos == None):
-            return (True, False)
-        # if both kings present, game is not terminal
-        return (False, None)
+        num_of_kings = 0
+        for key in self.gameboard:
+            if (self.gameboard[key][0] == "King"):
+                num_of_kings += 1
+        return num_of_kings < 2
 
     def evaluation_function(self):
         # Modified from Claude Shannon's evaluation funtion:
@@ -325,13 +311,10 @@ class State:
         return self.game.is_terminal()
 
     def utility(self, player):
-        check_terminal_result = self.is_terminal()
-        if (check_terminal_result[0]):
-            if (check_terminal_result[1]): # wins
-                return 1
-            else: # loses
-                return -1
-        return 0
+        if (self.is_terminal()):
+            return self.game.evaluation_function()
+        else:
+            return -1
 
 def get_col_int(col_char):
     return ord(col_char) - 97
