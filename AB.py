@@ -45,14 +45,30 @@ class Pawn(Piece):
     pass
 
 class Game:
-    def __init__(self, gameboard):
+    pass
+
+class State:
+    def __init__(self, gameboard, to_move):
         self.gameboard = gameboard
+        self.to_move = to_move
 
     def has_opponent_at(self, pos, opponent):
         return self.gameboard[pos][1] == opponent
 
-class State:
-    pass
+    def to_move(self):
+        return self.to_move
+
+    def actions(self):
+        pass
+
+    def result(self, action):
+        pass
+
+    def is_terminal(self):
+        pass
+
+    def utility(self, player):
+        pass
 
 def get_col_int(col_char):
     return ord(col_char) - 97
@@ -86,8 +102,8 @@ def ab():
 
 def studentAgent(gameboard):
     # You can code in here but you cannot remove this function, change its parameter or change the return type
-    global game
-    game = Game(gameboard)
+    global state
+    state = State(gameboard)
 
-    move = (None, None)
+    move = ab()
     return move #Format to be returned (('a', 0), ('b', 3))
