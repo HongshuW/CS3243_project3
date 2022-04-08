@@ -284,8 +284,17 @@ class State:
     def result(self, action):
         pass
 
+    def is_terminal(self):
+        return self.game.is_terminal()
+
     def utility(self, player):
-        pass
+        check_terminal_result = self.is_terminal()
+        if (check_terminal_result[0]):
+            if (check_terminal_result[1]): # wins
+                return 1
+            else: # loses
+                return -1
+        return 0
 
 def get_col_int(col_char):
     return ord(col_char) - 97
