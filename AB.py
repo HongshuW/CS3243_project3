@@ -17,6 +17,7 @@ class Piece:
         return self.position[0]
 
     def get_moves(self):
+        # return a list of positions that this piece can move to
         return None
 
     def get_threatened_pos(self):
@@ -42,8 +43,23 @@ class Queen(Piece):
     pass
         
 class King(Piece):
-    pass
-        
+    def get_moves(self):
+        # include unoccupied positions or positions containing an opponent piece
+        moves = list()
+        i = self.get_col_int() - 1
+        while (i <= self.get_col_int() + 1):
+            if (i < 5 and i >= 0):
+                j = self.get_row_int() - 1
+                while (j <= self.get_row_int() + 1):
+                    if (j < 5 and j >= 0):
+                        pos = get_position_tuple(get_col_char(i), j)
+                        if (not state.game.has_piece_at(pos) or
+                                state.game.has_opponent_at(pos, self.get_opponent_color())):
+                            moves.append(pos)
+                    j += 1
+            i += 1
+        return moves
+
 class Pawn(Piece):
     def get_moves(self):
         # if pawn is at the first or last row, it cannot capture other pieces,
