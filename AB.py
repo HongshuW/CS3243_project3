@@ -16,7 +16,11 @@ class Piece:
     def get_col_char(self):
         return self.position[0]
 
+    def get_moves(self):
+        return None
+
     def get_threatened_pos(self):
+        # return a list of positions occupied by opponents that are threatened by this piece
         return None
 
     def get_opponent_color(self):
@@ -41,8 +45,46 @@ class King(Piece):
     pass
         
 class Pawn(Piece):
-    #New Piece to be implemented
-    pass
+    def get_moves(self):
+        # if pawn is at the first or last row, it cannot capture other pieces,
+        # so only consider moving between rows 1 to 3
+        if (self.color == "White"):
+            new_row = self.get_row_int() + 1
+            new_pos = get_position_tuple(self.get_col_char(), new_row)
+            if (new_row <= 3 and (not state.game.has_piece_at(new_pos))):
+                return list(new_pos)
+        else:
+            new_row = self.get_row_int() - 1
+            new_pos = get_position_tuple(self.get_col_char(), new_row)
+            if (new_row >= 1 and (not state.game.has_piece_at(new_pos))):
+                return list(new_pos)
+        return None
+
+    def get_threatened_pos(self):
+        threatened = list()
+        if (self.color == "White"):
+            new_row = self.get_row_int() + 1
+            if (new_row < 5):
+                col_1 = self.get_col_int() + 1
+                col_2 = self.get_col_int() - 1
+                pos_1 = get_position_tuple(get_col_char(col_1), new_row)
+                pos_2 = get_position_tuple(get_col_char(col_2), new_row)
+                if (col_1 < 5 and state.game.has_opponent_at(pos_1, self.get_opponent_color())):
+                    threatened.append(pos_1)
+                if (col_2 >= 0 and state.game.has_opponent_at(pos_2, self.get_opponent_color())):
+                    threatened.append(pos_2)
+        else:
+            new_row = self.get_row_int() - 1
+            if (new_row >= 0):
+                col_1 = self.get_col_int() + 1
+                col_2 = self.get_col_int() - 1
+                pos_1 = get_position_tuple(get_col_char(col_1), new_row)
+                pos_2 = get_position_tuple(get_col_char(col_2), new_row)
+                if (col_1 < 5 and state.game.has_opponent_at(pos_1, self.get_opponent_color())):
+                    threatened.append(pos_1)
+                if (col_2 >= 0 and state.game.has_opponent_at(pos_2, self.get_opponent_color())):
+                    threatened.append(pos_2)
+        return threatened
 
 class Game:
     def __init__(self, gamemboard, parent, depth):
@@ -50,16 +92,16 @@ class Game:
         self.parent = parent
         self.depth = depth
 
-    def has_opponent_at(self, pos, opponent):
-        return self.gameboard[pos][1] == opponent
+    def has_piece_at(self, pos):
+        return (pos in self.gameboard)
+
+    def has_opponent_at(self, pos, opponent_color):
+        return self.has_piece_at(pos) and self.gameboard[pos][1] == opponent_color
 
 class State:
     def __init__(self, game, to_move):
         self.game = game
         self.to_move = to_move
-
-    def to_move(self):
-        return self.to_move
 
     def actions(self):
         pass
