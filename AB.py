@@ -1,11 +1,29 @@
-import sys
-
 ### IMPORTANT: Remove any print() functions or rename any print functions/variables/string when submitting on CodePost
 ### The autograder will not run if it detects any print function.
 
 # Helper functions to aid in your implementation. Can edit/remove
 class Piece:
-    pass
+    def __init__(self, color, position):
+        self.color = color
+        self.position = position
+
+    def get_row_int(self):
+        return self.position[1]
+
+    def get_col_int(self):
+        return ord(self.position[0]) - 97
+
+    def get_col_char(self):
+        return self.position[0]
+
+    def get_threatened_pos(self):
+        return None
+
+    def get_opponent_color(self):
+        if (self.color == "White"):
+            return "Black"
+        else:
+            return "White"
 
 class Knight(Piece):
     pass
@@ -27,10 +45,23 @@ class Pawn(Piece):
     pass
 
 class Game:
-    pass
+    def __init__(self, gameboard):
+        self.gameboard = gameboard
+
+    def has_opponent_at(self, pos, opponent):
+        return self.gameboard[pos][1] == opponent
 
 class State:
     pass
+
+def get_col_int(col_char):
+    return ord(col_char) - 97
+
+def get_col_char(col_int):
+    return chr(col_int + 97)
+
+def get_position_tuple(col_char, row):
+    return (col_char, int(row))
 
 #Implement your minimax with alpha-beta pruning algorithm here.
 def ab():
@@ -55,7 +86,8 @@ def ab():
 
 def studentAgent(gameboard):
     # You can code in here but you cannot remove this function, change its parameter or change the return type
-    config = sys.argv[1] #Takes in config.txt Optional
+    global game
+    game = Game(gameboard)
 
     move = (None, None)
     return move #Format to be returned (('a', 0), ('b', 3))
