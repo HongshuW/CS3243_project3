@@ -256,6 +256,14 @@ class Game:
     def has_opponent_at(self, pos, opponent_color):
         return self.has_piece_at(pos) and self.gameboard[pos][1] == opponent_color
 
+    def is_terminal(self):
+        king_pos = None
+        for pos in self.opponent_set:
+            if (self.opponent_set[pos][0] == "King"):
+                return False
+            else:
+                return True
+
 class State:
     def __init__(self, game):
         self.game = game
@@ -264,7 +272,7 @@ class State:
         pass
 
     def is_terminal(self):
-        pass
+        return self.game.is_terminal()
 
     def utility(self, player):
         pass
