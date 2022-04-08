@@ -242,7 +242,7 @@ class Game:
         for key in state.gameboard:
             if (state.gameboard[key][0] == 'King'):
                 num_of_kings += 1
-        return num_of_kings < 2 or state.depth >= 3
+        return num_of_kings < 2 or state.depth == 3
 
     def utility(self, state):
         # Modified from Claude Shannon's evaluation funtion:
@@ -334,7 +334,7 @@ class State:
         return pos in self.gameboard
 
     def has_opponent_at(self, pos):
-        return self.has_piece_at(pos) and self.gameboard[pos][1] != self.color
+        return pos in self.opponent_set
 
     def get_opponent_color(self):
         if (self.color == 'White'):
@@ -352,38 +352,44 @@ def get_position_tuple(col_char, row):
     return (col_char, int(row))
 
 # return (utility, move)
-def max_value(game, state):
+def max_value(game, state, alpha, beta):
     if game.is_terminal(state):
         return (game.utility(state), None)
     v = -math.inf
     move = None
     actions = game.actions(state)
     for a in actions:
-        result = min_value(game, game.result(state, a))
+        result = min_value(game, game.result(state, a), alpha, beta)
         v2 = result[0]
         if (v2 > v):
             v = v2
             move = a
+            alpha = max(alpha, v)
+        if (v >= beta):
+            return (v, move)
     return (v, move)
 
 # return (utility, move)
-def min_value(game, state):
+def min_value(game, state, alpha, beta):
     if game.is_terminal(state):
         return (game.utility(state), None)
     v = math.inf
     move = None
     actions = game.actions(state)
     for a in actions:
-        result = max_value(game, game.result(state, a))
+        result = max_value(game, game.result(state, a), alpha, beta)
         v2 = result[0]
         if (v2 < v):
             v = v2
             move = a
+            beta = min(beta, v)
+        if (v <= alpha):
+            return (v, move)
     return (v, move)
 
 #Implement your minimax with alpha-beta pruning algorithm here.
 def ab(game, state):
-    return max_value(game, state)[1]
+    return max_value(game, state, -math.inf, math.inf)[1]
 
 ### DO NOT EDIT/REMOVE THE FUNCTION HEADER BELOW###
 # Chess Pieces: King, Queen, Knight, Bishop, Rook (First letter capitalized)
