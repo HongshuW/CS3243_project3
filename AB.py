@@ -242,7 +242,7 @@ class Game:
         for key in state.gameboard:
             if (state.gameboard[key][0] == 'King'):
                 num_of_kings += 1
-        return num_of_kings < 2 or state.depth == 4
+        return num_of_kings < 2 or state.depth == 3
 
     def utility(self, state):
         # Modified from Claude Shannon's evaluation funtion:
@@ -423,9 +423,3 @@ def studentAgent(gameboard):
 
     move = ab(game, state)
     return move #Format to be returned (('a', 0), ('b', 3))
-
-# studentAgent({('a',0):('Rook','White'), ('a',4):('Rook','Black'), ('a',1):('Pawn','White'), ('a',3):('Pawn','Black'),
-#               ('b',0):('Knight','White'), ('b',4):('Knight','Black'), ('b',1):('Pawn','White'), ('b',3):('Pawn','Black'),
-#               ('c',0):('Bishop','White'), ('c',4):('Bishop','Black'), ('c',1):('Pawn','White'), ('c',3):('Pawn','Black'),
-#               ('d',0):('Queen','White'), ('d',4):('Queen','Black'), ('d',1):('Pawn','White'), ('d',3):('Pawn','Black'),
-#               ('e',0):('King','White'), ('e',4):('King','Black'), ('e',1):('Pawn','White'), ('e',3):('Pawn','Black')})
