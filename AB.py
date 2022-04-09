@@ -242,7 +242,7 @@ class Game:
         for key in state.gameboard:
             if (state.gameboard[key][0] == 'King'):
                 num_of_kings += 1
-        return num_of_kings < 2 or state.depth == 3
+        return num_of_kings < 2 or state.depth == 4
 
     def utility(self, state):
         # Modified from Claude Shannon's evaluation funtion:
@@ -287,50 +287,31 @@ class Game:
                     pawn -= 1
         return 200 * king + 9 * queen + 5 * rook + 3 * (bishop + knight) + pawn
 
+    def string_to_piece(self, type, color, pos):
+        piece = None
+        if (type == "King"):
+            piece = King(color, pos)
+        elif (type == "Queen"):
+            piece = Queen(color, pos)
+        elif (type == "Rook"):
+            piece = Rook(color, pos)
+        elif (type == "Bishop"):
+            piece = Bishop(color, pos)
+        elif (type == "Knight"):
+            piece = Knight(color, pos)
+        else:
+            piece = Pawn(color, pos)
+        return piece
+
     def actions(self, state):
-        threatened_area = self.opponent_actions(state)
         moves = set()
         own_pieces = state.own_set
         for pos in own_pieces:
-            piece = None
             type = own_pieces[pos][0]
             color = state.color
-            if (type == "King"):
-                piece = King(color, pos)
-            elif (type == "Queen"):
-                piece = Queen(color, pos)
-            elif (type == "Rook"):
-                piece = Rook(color, pos)
-            elif (type == "Bishop"):
-                piece = Bishop(color, pos)
-            elif (type == "Knight"):
-                piece = Knight(color, pos)
-            else:
-                piece = Pawn(color, pos)
-            moves = moves.union(piece.get_moves(state) - threatened_area)
-        return list(moves)
-
-    def opponent_actions(self, state):
-        moves = set()
-        opponent_pieces = state.opponent_set
-        for pos in opponent_pieces:
-            piece = None
-            type = opponent_pieces[pos][0]
-            color = state.get_opponent_color()
-            if (type == "King"):
-                piece = King(color, pos)
-            elif (type == "Queen"):
-                piece = Queen(color, pos)
-            elif (type == "Rook"):
-                piece = Rook(color, pos)
-            elif (type == "Bishop"):
-                piece = Bishop(color, pos)
-            elif (type == "Knight"):
-                piece = Knight(color, pos)
-            else:
-                piece = Pawn(color, pos)
+            piece = self.string_to_piece(type, color, pos)
             moves = moves.union(piece.get_moves(state))
-        return moves
+        return list(moves)
 
     def result(self, state, action):
         original_pos = action[0]
